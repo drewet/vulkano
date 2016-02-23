@@ -1,0 +1,30 @@
+language: rust
+rust:
+    - nightly
+    - stable
+
+install:
+  - export CXX="g++-4.8"
+
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    - gcc-4.8
+    - g++-4.8       # required to compile glslang
+    - clang
+
+script:
+    - cargo test -v --manifest-path glsl-to-spirv/Cargo.toml
+    - cargo test -v --manifest-path vulkano-shaders/Cargo.toml
+    - cargo build -v --manifest-path vulkano/Cargo.toml     # TODO: should be "cargo test" ; tests don't pass yet on travis
+
+after_success: 
+    - |
+        [ $TRAVIS_BRANCH = master ] &&
+        [ $TRAVIS_PULL_REQUEST = false ] &&
+        cargo doc --manifest-path vulkano/Cargo.toml &&
+        git clone https://github.com/davisp/ghp-import &&
+        ./ghp-import/ghp_import.py vulkano/target/doc &&
+        git push -fq https://${GH_TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git gh-pages

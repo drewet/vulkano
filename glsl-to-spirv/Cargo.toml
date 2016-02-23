@@ -1,0 +1,11 @@
+[package]
+name = "glsl-to-spirv"
+version = "0.1.0"
+authors = ["Pierre Krieger <pierre.krieger1708@gmail.com>"]
+build = "build/build.rs"
+
+[dependencies]
+tempdir = "0.3.4"
+
+[build-dependencies]
+cmake = "0.1.13"
